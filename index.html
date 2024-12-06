@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #77aaff 3px solid;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            list-style: none;
+        }
+        header li {
+            float: left;
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+        }
+        header nav {
+            float: right;
+            margin-top: 10px;
+        }
+        .showcase {
+            min-height: 400px;
+            background: url('showcase.jpg') no-repeat 0 -400px;
+            text-align: center;
+            color: #fff;
+        }
+        .showcase h1 {
+            margin-top: 100px;
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+        .showcase p {
+            font-size: 20px;
+        }
+        .main {
+            padding: 20px;
+            background: #fff;
+            margin-top: 20px;
+        }
+        .main h2 {
+            text-align: center;
+        }
+        .main form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .main form input, .main form select {
+            padding: 10px;
+            margin: 10px;
+            width: 50%;
+        }
+        .main form button {
+            padding: 10px 20px;
+            background: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .main form button:hover {
+            background: #77aaff;
+        }
+        .main .records, .main .alerts, .main .trend, .main .tip {
+            margin-top: 20px;
+        }
+        .main .records table, .main .alerts table, .main .trend table, .main .tip table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .main .records th, .main .alerts th, .main .trend th, .main .tip th, .main .records td, .main .alerts td, .main .trend td, .main .tip td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .main .records th, .main .alerts th, .main .trend th, .main .tip th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1>Personal Finance Management System</h1>
+                <h2>FinWise</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                     <a href="/resources">Getting Started</a>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section class="main container">
+        <h2>Finance Dashboard</h2>
+        <form action="/add_income" method="post">
+            <input type="number" name="amount" placeholder="Income Amount" required>
+            <input type="text" name="description" placeholder="Description" required>
+            <button type="submit">Add Income</button>
+        </form>
+        <form action="/add_expenditure" method="post">
+            <input type="number" name="amount" placeholder="Expenditure Amount" required>
+            <input type="text" name="description" placeholder="Description" required>
+            <button type="submit">Add Expenditure</button>
+        </form>
+        <form action="/add_investment" method="post">
+            <select name="type" required>
+                <option value="SIP">SIP</option>
+                <option value="FD">FD</option>
+            </select>
+            <input type="number" name="amount" placeholder="Investment Amount" required>
+            <input type="number" name="duration" placeholder="Duration (years)" required>
+            <input type="number" name="monthly" placeholder="Monthly Amount (for SIP)">
+            <button type="submit">Add Investment</button>
+        </form>
+        <div class="records">
+            <h3>Transactions</h3>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                </tr>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.split()[0] }}</td>
+                    <td>{{ transaction.split()[1] }}</td>
+                    <td>{{ transaction.split()[2] }}</td>
+                    <td>{{ ' '.join(transaction.split()[3:]) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="records">
+            <h3>Investments</h3>
+            <table>
+                <tr>
+                    <th>Start Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Duration</th>
+                    <th>Monthly Amount</th>
+                    <th>Maturity Amount</th>
+                </tr>
+                {% for investment in investments %}
+                <tr>
+                    <td>{{ investment.split()[0] }}</td>
+                    <td>{{ investment.split()[1] }}</td>
+                    <td>{{ investment.split()[2] }}</td>
+                    <td>{{ investment.split()[3] }}</td>
+                    <td>{{ ' '.join(investment.split()[4]) }}</td>
+                    <td>{{ ' '.join(investment.split()[5]) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="alerts">
+            <h3>Alerts</h3>
+            <ul>
+                {% for alert in alerts %}
+                <li>{{ alert }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="trend">
+            <h3>Trend Analysis</h3>
+            <p>Total Income: {{ trend.total_income }}</p>
+            <p>Total Expenditure: {{ trend.total_expenditure }}</p>
+            <p>Status: {{ trend.status }}</p>
+        </div>
+        <div class="tip">
+            <h3>Daily Finance Tip</h3>
+            <p>{{ tip }}</p>
+        </div>
+    </section>
+</body>
+</html>
